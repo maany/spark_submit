@@ -1,0 +1,3 @@
+spark-submit-expected-from-site-level-config:
+  spark_submit_default_var_enable_init_daemon: false
+  spark_submit_default_var_SPARK_MASTER: spark://spark-master:7077
