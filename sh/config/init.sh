@@ -1,11 +1,17 @@
 #!/bin/bash
 
-export SPARK_MASTER_URL=spark://${SPARK_MASTER_NAME}:${SPARK_MASTER_PORT}
-export SPARK_HOME=/spark
+"Initializing the Spark Submit Container"
+trap '' HUP
+cat /etc/simple_grid/config/spark_env.conf >> ~/.bashrc
+# Add the PySpark classes to the PYTHONPATH:
+if [ -z "${PYSPARK_PYTHONPATH_SET}" ]; then
+  export PYTHONPATH="${SPARK_HOME}/python:${PYTHONPATH}" >> ~/.bashrc
+  export PYTHONPATH="${SPARK_HOME}/python/lib/py4j-0.10.7-src.zip:${PYTHONPATH}" >> ~/.bashrc
+  export PYSPARK_PYTHONPATH_SET=1 >> ~/.bashrc
+fi
 
-/wait-for-step.sh
+source ~/.bashrc
+echo "Copying spark-defaults.conf to /spark/conf"
+cp /etc/simple_grid/config/spark-defaults.conf /spark/conf/
 
-# /etc/simple_grid/site_config/site_level_config_file
-# /etc/simple_grid/config/
-# /etc/simple_grid/scripts/{pre_init or post_init}/{hook_name.sh}
-cp /etc/simple_grid/config/spark-defaults.conf /spark/conf/spark-defaults.conf
+echo "All Set!"
